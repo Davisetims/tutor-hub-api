@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'users',
     'courses',
     'tutor_availability',
+    'booking',
     
 ]
 

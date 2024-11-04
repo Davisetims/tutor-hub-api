@@ -15,10 +15,10 @@ class TutorAvailability(models.Model):
     hourly_rate = models.FloatField()
     
     def save(self, *args, **kwargs):
-        # Check if the associated user is a tutor
+        
         if not self.tutor.is_tutor:
             raise ValidationError("The selected user is not a tutor.")
-        super().save(*args, **kwargs)  # Call the original save method if validation passes
+        super().save(*args, **kwargs) 
 
 
     def __str__(self):
