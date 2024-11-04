@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'whitenoise',
     # third party apps
     'users',
-    'courses'
+    'courses',
+    'tutor_availability',
     
 ]
 

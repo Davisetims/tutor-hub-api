@@ -1,3 +1,25 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from users.models import User
 
-# Create your models here.
+class TutorAvailability(models.Model):
+    tutor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="availabilities")
+    day_of_week = models.CharField(
+        max_length=9,
+        choices=[
+            ('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'),
+            ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'),
+            ('Sunday', 'Sunday')
+        ]
+    )
+    hourly_rate = models.FloatField()
+    
+    def save(self, *args, **kwargs):
+        # Check if the associated user is a tutor
+        if not self.tutor.is_tutor:
+            raise ValidationError("The selected user is not a tutor.")
+        super().save(*args, **kwargs)  # Call the original save method if validation passes
+
+
+    def __str__(self):
+        return f"{self.tutor.username} - {self.day_of_week} (${self.hourly_rate}/hr)"
