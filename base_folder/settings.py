@@ -10,7 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
+from datetime import timedelta
+import dj_database_url
 from pathlib import Path
+import pymysql
+pymysql.install_as_MySQLdb()
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kukx37@%=%155-!1v&r&=o)-hzcb)4e5z5p@^imlqlp-frefws'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +45,114 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'drf_spectacular',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'django_filters',
+    'drf_standardized_errors',
+    'drf_yasg',
+    'whitenoise',
 ]
+
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+"""# Content Security Policy settings"""
+CSP_DEFAULT_SRC = ("'self'",)
+
+"""# Allow embedding in iframes from these specific origins"""
+CSP_FRAME_ANCESTORS = ("'self'", 'https://cessfuniture.netlify.app',
+                        "http://localhost:5173",
+                        "http://localhost:5174",)
+
+
+CORS_ALLOW_ALL_HEADERS = True
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://cessfuniture.netlify.app',
+    'https://furniture-ecommerce-api-production.up.railway.app',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://cessfuniture.netlify.app',
+    'https://furniture-ecommerce-api-production.up.railway.app',
+
+]
+
+
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,  
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
+        }
+    }
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+
+}
+"""spectacular settings:"""
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Furniture e-commerce api',
+    'DESCRIPTION': 'This is an API for online furniture store',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,  # Don't include the schema in the URL
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,  # Enable deep linking for Swagger UI
+        'defaultModelsExpandDepth': -1,  # Disable models section if not needed
+    },
+    'COMPONENT_SPLIT_REQUEST': True,  # Split request and response for better organization
+    'SECURITY': [
+        {
+            'BearerAuth': [],
+        }
+    ],
+    'COMPONENT_SECURITY_SCHEMES': {
+        'BearerAuth': {
+            'type': 'http',
+            'scheme': 'bearer',
+            'bearerFormat': 'JWT',
+        }
+    },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
+}
+
+DRF_STANDARDIZED_ERRORS = {"ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": False}
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,12 +188,26 @@ WSGI_APPLICATION = 'base_folder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DATABASES = {}
+
+POSTGRES_LOCALLY = False
+
+if DEBUG == False or POSTGRES_LOCALLY == True:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.getenv('DATABASE_URL')
+        )
+
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
 
 
 # Password validation
@@ -115,7 +244,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+if os.getenv('RAILWAY_ENVIRONMENT'):
+    MEDIA_ROOT = '/app/media'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
