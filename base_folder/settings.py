@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     'drf_standardized_errors',
     'drf_yasg',
     'whitenoise',
+    # third party apps
+    'users',
+    'courses'
+    
 ]
 
 X_FRAME_OPTIONS = 'ALLOWALL'
@@ -116,8 +120,8 @@ SIMPLE_JWT = {
 """spectacular settings:"""
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Furniture e-commerce api',
-    'DESCRIPTION': 'This is an API for online furniture store',
+    'TITLE': 'Tutor Hub',
+    'DESCRIPTION': 'This is an API for tutor hub management system',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,  # Don't include the schema in the URL
     'SWAGGER_UI_SETTINGS': {

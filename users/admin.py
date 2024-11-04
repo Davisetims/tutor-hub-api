@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
             {
                 "fields": (
                     'phone_number',
-                    'address',
+                    'bio',
                     'profile_picture',
                     'is_tutor',
                     
@@ -31,7 +31,6 @@ class CustomUserAdmin(UserAdmin):
                     'is_tutor',
                     'email',
                     'bio',
-                    'password',
                     'profile_picture',
                     
                 )
