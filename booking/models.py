@@ -14,7 +14,7 @@ class Booking(models.Model):
 
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bookings")
     tutor_availability = models.ForeignKey(TutorAvailability, on_delete=models.CASCADE, related_name="bookings")
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="bookings")
+    unit = models.ManyToManyField(Unit, related_name="bookings")
     requested_date = models.DateTimeField()
     status = models.CharField(max_length=10, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     

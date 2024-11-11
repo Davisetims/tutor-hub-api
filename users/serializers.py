@@ -25,6 +25,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "last_name": self.user.last_name,
             'is_tutor': self.user.is_tutor,
             "is_superuser": self.user.is_superuser,
+            'profile_picture': self.user.profile_picture.url if self.user.profile_picture else None,
+            'bio':self.user.bio if self.user.bio else None,
+            'phone_number': self.user.phone_number if self.user.phone_number else None,
         }
 
         data.update({"user": user_data})
