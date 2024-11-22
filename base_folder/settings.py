@@ -80,8 +80,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
-    'https://cessfuniture.netlify.app',
-    'https://furniture-ecommerce-api-production.up.railway.app',
+    'https://tutor-hub-api-production.up.railway.app',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -97,8 +96,7 @@ CORS_ALLOW_METHODS = [
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
-    'https://cessfuniture.netlify.app',
-    'https://furniture-ecommerce-api-production.up.railway.app',
+    'https://tutor-hub-api-production.up.railway.app',
 
 ]
 
@@ -198,7 +196,7 @@ WSGI_APPLICATION = 'base_folder.wsgi.application'
 
 DATABASES = {}
 
-POSTGRES_LOCALLY = False
+POSTGRES_LOCALLY = True
 
 if DEBUG == False or POSTGRES_LOCALLY == True:
     DATABASES = {
