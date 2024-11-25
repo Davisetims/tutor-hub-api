@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/', include('courses.urls')),
     path('api/', include('tutor_availability.urls')),
     path('api/', include('booking.urls')),
+    path('api/', include('payment.urls')),
     
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
