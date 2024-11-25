@@ -7,9 +7,9 @@ class TutorAvailabilityViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = TutorAvailability.objects.all()
 
-    def get_queryset(self):
-        user = self.request.user
-        if user.is_tutor:
-            return TutorAvailability.objects.filter(tutor=user)
-        else:
-            return TutorAvailability.objects.none()  
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     if user.is_tutor:
+    #         return TutorAvailability.objects.filter(tutor=user)
+    #     else:
+    #         return TutorAvailability.objects.none()  
